@@ -1,0 +1,56 @@
+/* aqui indicamos en que paquete va estar el analizador
+* tambien las importaciones de las librerias o paquetes que necesitamos
+*/
+package com.adolfosc.analizadores;
+import java_cup.runtime.Symbol;
+import com.adolfosc.analizadores.Sym;
+
+
+%%
+
+%class LexicoExpresion
+%public
+%line
+%char
+%cup
+%unicode
+%ignorecase
+%init{
+	yyline = 1;
+	yychar = 1;
+%init}
+
+
+BLANCOS=[ \r\t]+
+D=[0-9]+
+DD=[0-9]+("."[  |0-9]+)?
+
+%%
+
+
+"Evaluar" {return new Symbol(Sym.REVALUAR,yyline,yychar, yytext());}
+
+";" {return new Symbol(Sym.PTCOMA,yyline,yychar, yytext());}
+"(" {return new Symbol(Sym.PARIZQ,yyline,yychar, yytext());}
+")" {return new Symbol(Sym.PARDER,yyline,yychar, yytext());}
+"[" {return new Symbol(Sym.CORIZQ,yyline,yychar, yytext());}
+"]" {return new Symbol(Sym.CORDER,yyline,yychar, yytext());}
+
+"+" {return new Symbol(Sym.MAS,yyline,yychar, yytext());}
+"-" {return new Symbol(Sym.MENOS,yyline,yychar, yytext());}
+"*" {return new Symbol(Sym.POR,yyline,yychar, yytext());}
+"/" {return new Symbol(Sym.DIVIDIDO,yyline,yychar, yytext());}
+
+\n {yychar=1;}
+
+{BLANCOS} {}
+{D} {return new Symbol(Sym.ENTERO,yyline,yychar, yytext());}
+{DD} {return new Symbol(Sym.DECIMAL,yyline,yychar, yytext());}
+
+
+. {
+	System.out.println("Este es un error lexico: "+yytext()+
+	", en la linea: "+yyline+", en la columna: "+yychar);
+}
+
+
